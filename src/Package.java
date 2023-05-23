@@ -11,7 +11,6 @@ public class Package {
     private int depth;
     private int deliveryGroup = 0;
     private Set<Orientation> orientations;
-    private Location location;
 
     public Package(int w, int h, int d, boolean canFlip, String name) {
         this.id = ID++;
@@ -31,6 +30,17 @@ public class Package {
         this.name = name;
         this.orientations = new HashSet<>();
         this.setOrientations(canFlip);
+    }
+
+    public Package(int w, int h, int d, boolean canFlip, String name, long id, int deliveryGroup) {
+        this.id = id;
+        this.width = w;
+        this.height = h;
+        this.depth = d;
+        this.name = name;
+        this.orientations = new HashSet<>();
+        this.setOrientations(canFlip);
+        this.deliveryGroup = deliveryGroup;
     }
 
     public Package(int w, int h, int d, String name) {
@@ -77,10 +87,6 @@ public class Package {
         this.depth = o.getD();
         this.height = o.getH();
 
-    }
-
-    private void setLocation(Location loc) {
-        this.location = loc;
     }
 
     public int getBaseArea() {

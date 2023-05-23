@@ -20,4 +20,17 @@ public class Location {
     public Bin getBin() {
         return this.b;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof Location)) {
+            return false;
+        }
+        Location loc = (Location) obj;
+        return this.backBottomLeft.equals(loc.getBackBottomLeftPoint()) &&
+                this.b.equals(loc.getBin()) && this.orientation.equals(loc.getOrientation());
+    }
 }

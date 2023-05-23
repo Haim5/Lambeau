@@ -20,6 +20,9 @@ public class Packer {
     }
 
     public Packer(Placer placer, Sorter sorter, List<Bin> bins, List<Package> packages) {
+        if (bins.size() == 1) {
+            this.binModel = new Bin(bins.get(0));
+        }
         this.bins = bins;
         this.packages = packages;
         this.sorter = sorter;

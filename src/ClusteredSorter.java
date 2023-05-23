@@ -1,6 +1,6 @@
 import java.util.*;
 
-public abstract class ClusteredSorter implements Sorter{
+public abstract class ClusteredSorter implements Sorter {
 
     private final Sorter s;
     private final int lambda;
@@ -13,8 +13,11 @@ public abstract class ClusteredSorter implements Sorter{
         this.binSize = binSize;
     }
 
-    private int getIndex(int val) {
-        return (int)(Math.ceil((double)(100 * val) / (double)(this.lambda * this.binSize)));
+    protected int getIndex(int val) {
+        if (this.lambda == 0) {
+            return 0;
+        }
+        return (int)(Math.ceil((double)(100 * val) / (double) (this.lambda * this.binSize)));
     }
 
     private void putInCluster(Package p, int val) {
@@ -33,20 +36,25 @@ public abstract class ClusteredSorter implements Sorter{
     }
 
     public List<Package> sort(List<Package> l) {
-        return this.sort(l, true);
+        return this.sort(l, true, true);
     }
 
     public List<Package> sort(List<Package> l, boolean isDescending) {
+        return this.sort(l, isDescending, isDescending);
+    }
+
+    protected List<Package> sort(List<Package> l, boolean isDescending1, boolean isDescending2) {
+        this.clusters.clear();
         this.addAll(l);
         List<Integer> indexList = new ArrayList<>(this.indexes);
-        if(isDescending) {
+        if(isDescending1) {
             Collections.sort(indexList, Collections.reverseOrder());
         } else {
             Collections.sort(indexList);
         }
         LinkedList<Package> ans = new LinkedList<>();
         for (int index : indexList) {
-            ans.addAll(this.s.sort(this.clusters.get(index), isDescending));
+            ans.addAll(this.s.sort(this.clusters.get(index), isDescending2));
         }
         return ans;
     }
