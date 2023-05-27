@@ -1,3 +1,7 @@
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.Document;
+
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
@@ -93,5 +97,13 @@ public class InputTable extends JFrame {
         this.rows.clear();
         this.table.revalidate();
         this.table.repaint();
+    }
+
+    public Node toXml(Document doc, String name) {
+        Element e = doc.createElement(name);
+        for (TableRow tr : this.rows) {
+            tr.appendXml(doc, e);
+        }
+        return e;
     }
 }

@@ -1,8 +1,17 @@
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 public class PackageTableRow implements TableRow {
+    public final static ArrayList<Class> CLASSES = new ArrayList<>(Arrays.asList(String.class, Long.class, Double.class,
+            Double.class, Double.class, Boolean.class, Double.class));
+    public final static ArrayList<String> NAMES = new ArrayList<>(Arrays.asList("Name", "ID", "Width", "Depth",
+            "Height", "This Side Up", "Delivery Group"));
     private static final int COL = 7;
     private final boolean canFlip;
     private final double group;
@@ -50,8 +59,6 @@ public class PackageTableRow implements TableRow {
         return this.canFlip;
     }
 
-
-
     public Object getValueAt(int column) {
 
         return switch (column) {
@@ -66,31 +73,24 @@ public class PackageTableRow implements TableRow {
         };
     }
 
-
-    public static ArrayList<String> NAMES() {
-        ArrayList<String> cols = new ArrayList<>();
-        cols.add("Name");
-        cols.add("ID");
-        cols.add("Width");
-        cols.add("Depth");
-        cols.add("Height");
-        cols.add("This Side Up");
-        cols.add("Delivery Group");
-        return cols;
+    @Override
+    public void appendXml(Document doc, Element e) {
+        Element p2 = doc.createElement("PACKAGE");
+        p2.setAttribute("id", String.format("%d", this.id));
+        p2.setIdAttribute("id", true);
+        p2.setAttribute("name", this.name);
+        p2.setAttribute("width", String.format("%.2f", this.width));
+        p2.setAttribute("depth", String.format("%.2f", this.depth));
+        p2.setAttribute("height", String.format("%.2f", this.height));
+        p2.setAttribute("group", String.format("%.2f", this.group));
+        if(this.canFlip) {
+            p2.setAttribute("canFlip", "true");
+        } else {
+            p2.setAttribute("canFlip", "false");
+        }
+        e.appendChild(p2);
     }
 
-
-    public static ArrayList<Class> CLASSES() {
-        ArrayList<Class> cls = new ArrayList<>();
-        cls.add(String.class);
-        cls.add(Long.class);
-        cls.add(Double.class);
-        cls.add(Double.class);
-        cls.add(Double.class);
-        cls.add(Boolean.class);
-        cls.add(Double.class);
-        return cls;
-    }
 
     public Package toPack() {
         return new Package((int)this.width,
@@ -101,5 +101,6 @@ public class PackageTableRow implements TableRow {
                 this.id,
                 (int)this.group);
     }
+
 
 }

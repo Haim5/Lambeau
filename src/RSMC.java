@@ -22,7 +22,7 @@ public class RSMC extends MeritCalculator {
         for(EP ep : eps) {
             for (Orientation o : orientations) {
                 if (ep.canPut(o)) {
-                    int g = calc(o, ep) + ep.getPoint().getZ();
+                    int g = calc(o, ep);
                     if (g < min) {
                         min = g;
                         this.setBestEP(ep);

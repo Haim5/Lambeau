@@ -1,7 +1,15 @@
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ContainerTableRow implements TableRow {
+    public final static ArrayList<Class> CLASSES = new ArrayList<>(Arrays.asList(String.class, Double.class,
+            Double.class, Double.class, Double.class));
+    public final static ArrayList<String> NAMES = new ArrayList<>(Arrays.asList("Name", "Width", "Depth",
+            "Height", "Quantity"));
     private static final int COL = 5;
     private String name;
     private double depth;
@@ -49,26 +57,20 @@ public class ContainerTableRow implements TableRow {
         };
     }
 
-
-    public static ArrayList<String> NAMES() {
-        ArrayList<String> cols = new ArrayList<>();
-        cols.add("Name");
-        cols.add("Width");
-        cols.add("Depth");
-        cols.add("Height");
-        cols.add("Quantity");
-        return cols;
-    }
-
-
-    public static ArrayList<Class> CLASSES() {
-        ArrayList<Class> cls = new ArrayList<>();
-        cls.add(String.class);
-        cls.add(Double.class);
-        cls.add(Double.class);
-        cls.add(Double.class);
-        cls.add(Double.class);
-        return cls;
+    @Override
+    public void appendXml(Document doc, Element e) {
+        Element container = doc.createElement("CONTAINER");
+        container.setAttribute("name", this.name);
+        container.setAttribute("width", String.format("%.2f", this.width));
+        container.setAttribute("depth", String.format("%.2f", this.depth));
+        container.setAttribute("height", String.format("%.2f", this.height));
+        container.setAttribute("quantity", String.format("%.2f", this.quantity));
+        if(this.quantity == Double.POSITIVE_INFINITY) {
+            container.setAttribute("isModel", "true");
+        } else {
+            container.setAttribute("isModel", "false");
+        }
+        e.appendChild(container);
     }
 
     public List<Bin> toBin() {

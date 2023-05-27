@@ -11,6 +11,7 @@ public class Package {
     private int depth;
     private int deliveryGroup = 0;
     private Set<Orientation> orientations;
+    private boolean canFlip = true;
 
     public Package(int w, int h, int d, boolean canFlip, String name) {
         this.id = ID++;
@@ -19,6 +20,7 @@ public class Package {
         this.depth = d;
         this.name = name;
         this.orientations = new HashSet<>();
+        this.canFlip = canFlip;
         this.setOrientations(canFlip);
     }
 
@@ -29,6 +31,7 @@ public class Package {
         this.depth = d;
         this.name = name;
         this.orientations = new HashSet<>();
+        this.canFlip = canFlip;
         this.setOrientations(canFlip);
     }
 
@@ -40,6 +43,7 @@ public class Package {
         this.name = name;
         this.orientations = new HashSet<>();
         this.setOrientations(canFlip);
+        this.canFlip = canFlip;
         this.deliveryGroup = deliveryGroup;
     }
 
@@ -127,14 +131,10 @@ public class Package {
         return this.name;
     }
 
+    public boolean isCanFlip() {
+        return this.canFlip;
+    }
 
-//    @Override
-//    public Package clone() {
-//        if (this.orientations.size() <= 2) {
-//            return new Package(this.width, this.height, this.depth, false, this.name);
-//        }
-//        return new Package(this.width, this.height, this.depth, true, this.name, this.id);
-//    }
 
     public int getDeliveryGroup() {
         return this.deliveryGroup;

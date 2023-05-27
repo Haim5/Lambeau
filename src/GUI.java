@@ -1,5 +1,21 @@
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.plaf.metal.MetalIconFactory;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -39,18 +55,20 @@ public class GUI implements ActionListener {
     private boolean hasModel = false;
     private Solution solution;
     private JComboBox<Integer> constraintLevel;
+    private LinkedList<Bin> currBins;
+    private LinkedList<Package> currPacks;
 
 
     public GUI() {
-        this.setHomeFrame();
         this.setEditFrame();
+        this.setHomeFrame();
+    }
 
+    public void start() {
         // Show the JFrame
         this.welcomeFrame.setVisible(true);
         this.editFrame.setVisible(false);
-
     }
-
 
 
     private void setHomeFrame() {
@@ -85,6 +103,69 @@ public class GUI implements ActionListener {
         JButton load = new JButton("Load");
         load.setFocusPainted(false);
         load.setIcon(new ImageIcon(getClass().getResource("res/icons/load.png")));
+        load.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setAcceptAllFileFilterUsed(false);
+            fileChooser.setFileFilter(new FileNameExtensionFilter("XML files", "xml"));
+            int option = fileChooser.showDialog(null, "Open");
+            if (option == JFileChooser.APPROVE_OPTION) {
+                File fileToload = fileChooser.getSelectedFile();
+                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+                //an instance of builder to parse the specified xml file
+                DocumentBuilder db = null;
+                try {
+                    db = dbf.newDocumentBuilder();
+                } catch (ParserConfigurationException parserConfigurationException) {
+                    parserConfigurationException.printStackTrace();
+                }
+                Document doc = null;
+                try {
+                    doc = db.parse(fileToload);
+                } catch (SAXException saxException) {
+                    saxException.printStackTrace();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+                doc.getDocumentElement().normalize();
+
+                NodeList nodeList = doc.getElementsByTagName("PACKAGE");
+
+                for (int itr = 0; itr < nodeList.getLength(); itr++) {
+                    Node node = nodeList.item(itr);
+                    if (node.getNodeType() == Node.ELEMENT_NODE) {
+                        Element eElement = (Element) node;
+                        String id = (eElement.getAttribute("id"));
+                        double w = Double.parseDouble(eElement.getAttribute("width"));
+                        double d = Double.parseDouble(eElement.getAttribute("depth"));
+                        double h = Double.parseDouble(eElement.getAttribute("height"));
+                        double g = Double.parseDouble(eElement.getAttribute("group"));
+                        boolean flip = Boolean.parseBoolean(eElement.getAttribute("canFlip"));
+                        String name = eElement.getAttribute("name");
+                        PackageTableRow ptr = new PackageTableRow(name, Long.parseLong(id), w, d, h, flip, g);
+                        this.pt.add(ptr);
+                    }
+                }
+
+                NodeList nodeList2 = doc.getElementsByTagName("CONTAINER");
+
+                for (int itr = 0; itr < nodeList2.getLength(); itr++) {
+                    Node node = nodeList2.item(itr);
+                    if (node.getNodeType() == Node.ELEMENT_NODE) {
+                        Element eElement = (Element) node;
+                        double w = Double.parseDouble(eElement.getAttribute("width"));
+                        double d = Double.parseDouble(eElement.getAttribute("depth"));
+                        double h = Double.parseDouble(eElement.getAttribute("height"));
+                        double q = Double.parseDouble(eElement.getAttribute("quantity"));
+                        boolean model = Boolean.parseBoolean(eElement.getAttribute("canFlip"));
+                        String name = eElement.getAttribute("name");
+                        this.hasModel = model;
+                        ContainerTableRow ctr = new ContainerTableRow(name, w, d, h, q);
+                        this.containersTable.add(ctr);
+                    }
+                }
+                this.switchFrame();
+            }
+        });
 
         JButton exit = new JButton("Exit");
         exit.setFocusPainted(false);
@@ -168,6 +249,8 @@ public class GUI implements ActionListener {
                 packs.add(ptr.toPack());
             }
             if(bins.size() > 0 && packs.size() > 0) {
+                this.currBins = bins;
+                this.currPacks = packs;
                 PackingManager pm = new PackingManager(bins, packs, constraint);
                 this.solution = pm.findSolution();
                 System.out.println(this.solution);
@@ -205,6 +288,24 @@ public class GUI implements ActionListener {
                         }
                     }
                 }
+                try {
+                    DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+                    DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+                    Document doc = docBuilder.newDocument();
+                    Element rootElement = doc.createElement("DELIVERY");
+                    doc.appendChild(rootElement);
+                    rootElement.appendChild(this.containersTable.toXml(doc, "CONTAINERS"));
+                    rootElement.appendChild(this.pt.toXml(doc, "PACKAGES"));
+                    TransformerFactory transformerFactory = TransformerFactory.newInstance();
+                    Transformer transformer = transformerFactory.newTransformer();
+                    DOMSource source = new DOMSource(doc);
+                    StreamResult result = new StreamResult(new File(fileToSave.getAbsolutePath() + "-content.xml"));
+                    transformer.transform(source, result);
+                } catch (ParserConfigurationException pce) {
+                    pce.printStackTrace();
+                } catch (TransformerException tfe) {
+                    tfe.printStackTrace();
+                }
             }
         });
 
@@ -226,8 +327,8 @@ public class GUI implements ActionListener {
 
         // Create JScrollPane to add scroll functionality
         InputTable pt = new InputTable("Packages",
-                PackageTableRow.NAMES(),
-                PackageTableRow.CLASSES());
+                PackageTableRow.NAMES,
+                PackageTableRow.CLASSES);
         this.pt = pt;
         JScrollPane scroller1 = pt.getScroller();
         scroller1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -236,8 +337,8 @@ public class GUI implements ActionListener {
 
 
         InputTable containers = new InputTable("Containers",
-                ContainerTableRow.NAMES(),
-                ContainerTableRow.CLASSES());
+                ContainerTableRow.NAMES,
+                ContainerTableRow.CLASSES);
         this.containersTable = containers;
         JScrollPane scroller2 = containers.getScroller();
         scroller2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -427,14 +528,17 @@ public class GUI implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
-        if(source == this.makeNewPacking) {
-            this.editFrame.setVisible(true);
-            pause(0.5);
-            this.welcomeFrame.setVisible(false);
-
-        } else if (source == this.exit) {
+        if (source == this.exit) {
             System.exit(1);
+        } else {
+            switchFrame();
         }
+    }
+
+    private void switchFrame() {
+        this.editFrame.setVisible(true);
+        pause(0.5);
+        this.welcomeFrame.setVisible(false);
     }
 
 

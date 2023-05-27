@@ -140,4 +140,8 @@ public class Bin {
     public boolean equals(Object obj) {
         return obj == this;
     }
+
+    public Map<Location, Package> getLocations() {
+        return this.locations;
+    }
 }

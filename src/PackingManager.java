@@ -39,21 +39,19 @@ public class PackingManager {
         if(best.isOptimal(m)) {
             return best;
         }
-
-        for(int i = 6; i <= 15; i++) {
+        for (int i = 5; i <= 15; i++) {
             Solution t = this.find(new BFD(new RSMC()),
                     new ClusteredDeliverySorter(new ClusteredAreaHeightSorter(new Bin(this.b.get(0)), i), this.constraint),
                     this.copyBins(this.b),
                     l);
-            if(t.isOptimal(m)) {
+            if (t.isOptimal(m)) {
                 return t;
             }
-            if(t.isBetter(best)) {
+            if (t.isBetter(best)) {
                 best = t;
             }
         }
-
-        for(int i : OPT1) {
+        for (int i : OPT1) {
             Solution t = (this.find(new BFD(new RSMC()),
                     new ClusteredDeliverySorter(new ClusteredHeightAreaSorter(new Bin(this.b.get(0)), i), this.constraint),
                     this.copyBins(this.b),
@@ -61,12 +59,11 @@ public class PackingManager {
             if (t.isOptimal(m)) {
                 return t;
             }
-            if(t.isBetter(best)) {
+            if (t.isBetter(best)) {
                 best = t;
             }
         }
-
-        for(int i : OPT2) {
+        for (int i : OPT2) {
             Solution t = (this.find(new FFD(),
                     new ClusteredDeliverySorter(new ClusteredHeightAreaSorter(new Bin(this.b.get(0)), i), this.constraint),
                     this.copyBins(this.b),
@@ -74,20 +71,20 @@ public class PackingManager {
             if (t.isOptimal(m)) {
                 return t;
             }
-            if(t.isBetter(best)) {
+            if (t.isBetter(best)) {
                 best = t;
             }
         }
 
-        for(int i = 5; i <= 25; i++) {
+        for (int i = 5; i <= 25; i++) {
             Solution t = (this.find(new FFD(),
                     new ClusteredDeliverySorter(new ClusteredAreaHeightSorter(new Bin(this.b.get(0)), i), this.constraint),
                     this.copyBins(this.b),
                     l));
-            if(t.isOptimal(m)) {
+            if (t.isOptimal(m)) {
                 return t;
             }
-            if(t.isBetter(best)) {
+            if (t.isBetter(best)) {
                 best = t;
             }
         }
