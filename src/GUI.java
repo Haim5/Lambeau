@@ -1,4 +1,10 @@
-
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.shape.Box;
+import javafx.stage.Stage;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -7,7 +13,6 @@ import org.xml.sax.SAXException;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.plaf.metal.MetalIconFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -17,54 +22,59 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.Set;
 
-public class GUI implements ActionListener {
+public class GUI {
 
     private static final int FRAME_SIZE = 800;
-    private final JFrame welcomeFrame = new JFrame();
-    private final JFrame editFrame = new JFrame();
-    private JButton makeNewPacking;
-    private JButton exit;
+    private static final int BUFFER = 30;
 
+    private final JFrame welcomeFrame = new JFrame("Lambeau");
+    private final JFrame editFrame = new JFrame("Lambeau");
+    private JFrame instructionsFrame = new JFrame("Instructions");
+
+    private JSpinner groupSpinner;
+    private JSpinner addConSpinnerX;
+    private JSpinner addConSpinnerY;
+    private JSpinner addConSpinnerZ;
     private JSpinner addSpinnerX;
     private JSpinner addSpinnerY;
     private JSpinner addSpinnerZ;
     private JSpinner addSpinnerQ;
+    private JSpinner addConSpinnerQ;
+
     private InputTable pt;
+    private InputTable containersTable;
+
+    private JCheckBox flip;
+    private JCheckBox conModel;
+
+    private JTextField conNameInput;
     private JTextField nameInput;
 
-    private long id = 0;
-    private JCheckBox flip;
-    private JSpinner groupSpinner;
-    private JCheckBox conModel;
-    private JSpinner addConSpinnerX;
-    private JSpinner addConSpinnerY;
-    private JSpinner addConSpinnerZ;
-    private JTextField conNameInput;
-    private JSpinner addConSpinnerQ;
-    private InputTable containersTable;
-    private boolean hasModel = false;
-    private Solution solution;
     private JComboBox<Integer> constraintLevel;
+    private JTextArea insText;
+    private JButton jfxBtn;
+
     private LinkedList<Bin> currBins;
     private LinkedList<Package> currPacks;
 
+    private Solution solution;
+    private long id = 0;
+    private boolean hasModel = false;
 
     public GUI() {
         this.setEditFrame();
         this.setHomeFrame();
     }
 
-    public void start() {
+    public void run() {
         // Show the JFrame
         this.welcomeFrame.setVisible(true);
         this.editFrame.setVisible(false);
@@ -76,9 +86,7 @@ public class GUI implements ActionListener {
         this.welcomeFrame.setSize(2 * FRAME_SIZE,FRAME_SIZE);
         this.welcomeFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.welcomeFrame.setMinimumSize(new Dimension(2 * FRAME_SIZE, FRAME_SIZE));
-
         this.welcomeFrame.setIconImage(new ImageIcon(getClass().getResource("res/icons/logo.png")).getImage());
-        this.welcomeFrame.setTitle("Lambeau");
         this.welcomeFrame.setLayout(new BorderLayout());
         this.welcomeFrame.setBackground(Color.WHITE);
         JPanel out = new JPanel();
@@ -97,8 +105,9 @@ public class GUI implements ActionListener {
         JButton make = new JButton("New");
         make.setFocusPainted(false);
         make.setIcon(new ImageIcon(getClass().getResource("res/icons/add.png")));
-        make.addActionListener(this);
-        this.makeNewPacking = make;
+        make.addActionListener(e -> {
+            this.switchFrame();
+        });
 
         JButton load = new JButton("Load");
         load.setFocusPainted(false);
@@ -170,8 +179,9 @@ public class GUI implements ActionListener {
         JButton exit = new JButton("Exit");
         exit.setFocusPainted(false);
         exit.setIcon(new ImageIcon(getClass().getResource("res/icons/exit.png")));
-        exit.addActionListener(this);
-        this.exit = exit;
+        exit.addActionListener(e -> {
+            System.exit(1);
+        });
 
 
         row2.add(make);
@@ -191,7 +201,6 @@ public class GUI implements ActionListener {
         this.editFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.editFrame.setMinimumSize(new Dimension(2 * FRAME_SIZE, FRAME_SIZE));
         this.editFrame.setIconImage(new ImageIcon(getClass().getResource("res/icons/logo.png")).getImage());
-        this.editFrame.setTitle("Lambeau");
 
         JPanel visualWorkArea = new JPanel();
         visualWorkArea.setLayout(new BoxLayout(visualWorkArea, BoxLayout.X_AXIS));
@@ -221,18 +230,37 @@ public class GUI implements ActionListener {
         JButton show3d = new JButton("Show 3D");
         show3d.setFocusPainted(false);
         show3d.setEnabled(false);
-
         show3d.setIcon(new ImageIcon(getClass().getResource("res/icons/3d-model.png")));
+        this.jfxBtn = show3d;
+
 
         JButton instructions = new JButton("Show Packing Instructions");
         instructions.setFocusPainted(false);
         instructions.setEnabled(false);
+
+        this.instructionsFrame.setSize( FRAME_SIZE/2, FRAME_SIZE/2);
+        this.insText = new JTextArea();
+        JPanel insPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        insPanel.setBackground(Color.WHITE);
+        insPanel.add(this.insText);
+        JScrollPane insScroll = new JScrollPane(insPanel);
+        insScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        insScroll.setPreferredSize(new Dimension(FRAME_SIZE/2, FRAME_SIZE/2));
+        this.instructionsFrame.add(insScroll);
+        instructions.addActionListener(e -> {
+            this.insText.selectAll();
+            this.insText.replaceSelection("");
+            this.insText.append(this.solution.toString());
+            this.instructionsFrame.setVisible(true);
+
+        });
 
         instructions.setIcon(new ImageIcon(getClass().getResource("res/icons/instruction.png")));
 
         JButton pack = new JButton("Pack");
         pack.setFocusPainted(false);
         pack.addActionListener(e -> {
+            this.instructionsFrame.setVisible(false);
             int constraint = this.constraintLevel.getSelectedIndex();
 
             LinkedList<Bin> bins = new LinkedList<>();
@@ -253,7 +281,7 @@ public class GUI implements ActionListener {
                 this.currPacks = packs;
                 PackingManager pm = new PackingManager(bins, packs, constraint);
                 this.solution = pm.findSolution();
-                System.out.println(this.solution);
+                //System.out.println(this.solution);
                 if (this.solution != null) {
                     show3d.setEnabled(true);
                     instructions.setEnabled(true);
@@ -351,7 +379,6 @@ public class GUI implements ActionListener {
         splitPane.setResizeWeight(0.2);
 
         visualWorkArea.add(splitPane);
-
 
         this.editFrame.add(controls);
         this.editFrame.add(visualWorkArea);
@@ -525,15 +552,6 @@ public class GUI implements ActionListener {
         } catch (InterruptedException e) {}
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        Object source = e.getSource();
-        if (source == this.exit) {
-            System.exit(1);
-        } else {
-            switchFrame();
-        }
-    }
 
     private void switchFrame() {
         this.editFrame.setVisible(true);
@@ -568,6 +586,15 @@ public class GUI implements ActionListener {
             this.pt.add(ptr);
         }
     }
+
+    public JButton get3DBtn() {
+        return this.jfxBtn;
+    }
+
+    public Solution getSolution() {
+        return this.solution;
+    }
+
 
 
 }

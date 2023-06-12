@@ -1,8 +1,14 @@
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Residual Space Merit Calculator
+ */
 public class RSMC extends MeritCalculator {
 
+    /**
+     * Constructor
+     */
     public RSMC() {
         this.setWorst(Integer.MAX_VALUE);
     }
@@ -34,6 +40,12 @@ public class RSMC extends MeritCalculator {
         return min;
     }
 
+    /**
+     * Help function for calc
+     * @param o Orientation
+     * @param ep Extreme Point
+     * @return the score
+     */
     private int calc(Orientation o, EP ep) {
         int rs1 = ep.getRsx() - o.getW();
         int rs2 = ep.getRsy() - o.getD();
