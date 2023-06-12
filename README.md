@@ -1,1 +1,2 @@
 # Lambeau
+Container packing algorithm
