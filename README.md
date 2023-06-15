@@ -1,2 +1,2 @@
 # Lambeau
-Container packing algorithm
+Container packing algorithm using the Extreme Points approach.
