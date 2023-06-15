@@ -1,6 +1,9 @@
 import java.util.List;
 import java.util.Set;
 
+/**
+ * First fit decreasing placing heuristic.
+ */
 public class FFD implements Placer {
     @Override
     public boolean put(List<Bin> bins, Package p) {

@@ -1,3 +1,6 @@
+/**
+ * Clustered height-area sorter
+ */
 public class ClusteredHeightAreaSorter extends ClusteredSorter {
     public ClusteredHeightAreaSorter(Bin bin, int lambda) {
         super(bin.getHeight(), new BaseAreaSorter(), lambda);

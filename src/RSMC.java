@@ -31,8 +31,6 @@ public class RSMC extends MeritCalculator {
                     int g = calc(o, ep);
                     if (g < min) {
                         min = g;
-                        this.setBestEP(ep);
-                        this.setBestO(o);
                     }
                 }
             }

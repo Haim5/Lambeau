@@ -1,18 +1,29 @@
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * package class.
+ */
 public class Package {
+    // used for generating id.
     private static long ID = 0;
 
-    private long id;
-    private String name;
-    private int width;
-    private int height;
-    private int depth;
+    private final long id;
+    private final String name;
+    private final int width;
+    private final int height;
+    private final int depth;
     private int deliveryGroup = 0;
-    private Set<Orientation> orientations;
-    private boolean canFlip = true;
+    private final Set<Orientation> orientations;
 
+    /**
+     * final
+     * @param w width
+     * @param h height
+     * @param d depth
+     * @param canFlip can we flip the package.
+     * @param name package name.
+     */
     public Package(int w, int h, int d, boolean canFlip, String name) {
         this.id = ID++;
         this.width = w;
@@ -20,10 +31,18 @@ public class Package {
         this.depth = d;
         this.name = name;
         this.orientations = new HashSet<>();
-        this.canFlip = canFlip;
         this.setOrientations(canFlip);
     }
 
+    /**
+     * Constructor
+     * @param w width.
+     * @param h height.
+     * @param d depth.
+     * @param canFlip can we flip the package.
+     * @param name package name.
+     * @param id package id.
+     */
     public Package(int w, int h, int d, boolean canFlip, String name, long id) {
         this.id = id;
         this.width = w;
@@ -31,10 +50,19 @@ public class Package {
         this.depth = d;
         this.name = name;
         this.orientations = new HashSet<>();
-        this.canFlip = canFlip;
         this.setOrientations(canFlip);
     }
 
+    /**
+     * Constructor
+     * @param w width.
+     * @param h height.
+     * @param d depth.
+     * @param canFlip can we flip the package.
+     * @param name package name.
+     * @param id package id.
+     * @param deliveryGroup package delivery group
+     */
     public Package(int w, int h, int d, boolean canFlip, String name, long id, int deliveryGroup) {
         this.id = id;
         this.width = w;
@@ -43,7 +71,6 @@ public class Package {
         this.name = name;
         this.orientations = new HashSet<>();
         this.setOrientations(canFlip);
-        this.canFlip = canFlip;
         this.deliveryGroup = deliveryGroup;
     }
 
@@ -76,21 +103,6 @@ public class Package {
 
     public int getHeight() {
         return this.height;
-    }
-
-    public int getDepth() {
-        return this.depth;
-    }
-
-    public int getWidth() {
-        return this.width;
-    }
-
-    public void setOrientation(Orientation o) {
-        this.width = o.getW();
-        this.depth = o.getD();
-        this.height = o.getH();
-
     }
 
     public int getBaseArea() {
@@ -131,16 +143,7 @@ public class Package {
         return this.name;
     }
 
-    public boolean isCanFlip() {
-        return this.canFlip;
-    }
-
-
     public int getDeliveryGroup() {
         return this.deliveryGroup;
-    }
-
-    public void setDeliveryGroup(int group) {
-        this.deliveryGroup = group;
     }
 }

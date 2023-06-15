@@ -1,25 +1,50 @@
+/**
+ * Point class -used to represent a 3D point.
+ */
 public class Point {
-    private int x;
-    private int y;
-    private int z;
+    private final int x;
+    private final int y;
+    private final int z;
 
+    /**
+     * Constructor.
+     * @param x value of x
+     * @param y value of y
+     * @param z value of z
+     */
     public Point(int x, int y, int z) {
         this.x= x;
         this.y = y;
         this.z = z;
     }
 
+    /**
+     * Constructor with default values.
+     */
     public Point() {
         this(0, 0, 0);
     }
 
+    /**
+     * get the value of X
+     * @return int
+     */
     public int getX() {
         return this.x;
     }
+
+    /**
+     * get the value of Z
+     * @return int
+     */
     public int getZ() {
         return this.z;
     }
 
+    /**
+     * get the value of Y
+     * @return int
+     */
     public int getY() {
         return this.y;
     }
@@ -38,14 +63,12 @@ public class Point {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("(");
-        sb.append(this.x);
-        sb.append(",");
-        sb.append(this.y);
-        sb.append(",");
-        sb.append(this.z);
-        sb.append(")");
-        return sb.toString();
+        return "(" +
+                this.x +
+                "," +
+                this.y +
+                "," +
+                this.z +
+                ")";
     }
 }

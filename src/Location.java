@@ -1,22 +1,43 @@
+/**
+ * Location class.
+ */
 public class Location {
-    private Bin b;
-    private Point backBottomLeft;
-    private Orientation orientation;
+    private final Bin b;
+    private final Point backBottomLeft;
+    private final Orientation orientation;
 
+    /**
+     * Constructor
+     * @param b bin.
+     * @param p point.
+     * @param o orientation.
+     */
     public Location(Bin b, Point p, Orientation o) {
         this.b = b;
         this.backBottomLeft = p;
         this.orientation = o;
     }
 
+    /**
+     * get the orientation.
+     * @return Orientation.
+     */
     public Orientation getOrientation() {
         return this.orientation;
     }
 
+    /**
+     * get the bottom left back point of the the box.
+     * @return Point.
+     */
     public Point getBackBottomLeftPoint() {
         return this.backBottomLeft;
     }
 
+    /**
+     * get the bin.
+     * @return Bin.
+     */
     public Bin getBin() {
         return this.b;
     }

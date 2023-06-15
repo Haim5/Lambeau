@@ -1,28 +1,43 @@
-import java.util.Map;
-
+/**
+ * Orientation class.
+ */
 public class Orientation {
-    public static byte W = 0;
-    public static byte H = 1;
-    public static byte D = 2;
+    private final int width;
+    private final int height;
+    private final int depth;
 
-    private int width;
-    private int height;
-    private int depth;
-
+    /**
+     * Constructor.
+     * @param w width
+     * @param h height
+     * @param d depth
+     */
     public Orientation(int w, int h, int d) {
         this.width = w;
         this.height = h;
         this.depth = d;
     }
 
+    /**
+     * get the width
+     * @return width
+     */
     public int getW() {
         return this.width;
     }
 
+    /**
+     * get the height
+     * @return height
+     */
     public int getH() {
         return this.height;
     }
 
+    /**
+     * get the depth
+     * @return depth
+     */
     public int getD() {
         return this.depth;
     }

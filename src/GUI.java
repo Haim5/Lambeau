@@ -1,16 +1,8 @@
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.embed.swing.JFXPanel;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.shape.Box;
-import javafx.stage.Stage;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.DocumentBuilder;
@@ -27,18 +19,21 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedList;
-import java.util.Map;
-import java.util.Set;
 
+
+/**
+ * GUI class.
+ */
 public class GUI {
 
     private static final int FRAME_SIZE = 800;
-    private static final int BUFFER = 30;
 
+    // JFrames.
     private final JFrame welcomeFrame = new JFrame("Lambeau");
     private final JFrame editFrame = new JFrame("Lambeau");
-    private JFrame instructionsFrame = new JFrame("Instructions");
+    private final JFrame instructionsFrame = new JFrame("Instructions");
 
+    // JSpinners.
     private JSpinner groupSpinner;
     private JSpinner addConSpinnerX;
     private JSpinner addConSpinnerY;
@@ -49,12 +44,15 @@ public class GUI {
     private JSpinner addSpinnerQ;
     private JSpinner addConSpinnerQ;
 
+    // InputTables.
     private InputTable pt;
     private InputTable containersTable;
 
+    // JCheckBoxes
     private JCheckBox flip;
     private JCheckBox conModel;
 
+    // JTextFields
     private JTextField conNameInput;
     private JTextField nameInput;
 
@@ -62,18 +60,22 @@ public class GUI {
     private JTextArea insText;
     private JButton jfxBtn;
 
-    private LinkedList<Bin> currBins;
-    private LinkedList<Package> currPacks;
-
     private Solution solution;
     private long id = 0;
     private boolean hasModel = false;
 
+    /**
+     * Constructor.
+     */
     public GUI() {
+        // init the frames.
         this.setEditFrame();
         this.setHomeFrame();
     }
 
+    /**
+     * run the gui.
+     */
     public void run() {
         // Show the JFrame
         this.welcomeFrame.setVisible(true);
@@ -81,44 +83,23 @@ public class GUI {
     }
 
 
-    private void setHomeFrame() {
-        this.welcomeFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.welcomeFrame.setSize(2 * FRAME_SIZE,FRAME_SIZE);
-        this.welcomeFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        this.welcomeFrame.setMinimumSize(new Dimension(2 * FRAME_SIZE, FRAME_SIZE));
-        this.welcomeFrame.setIconImage(new ImageIcon(getClass().getResource("res/icons/logo.png")).getImage());
-        this.welcomeFrame.setLayout(new BorderLayout());
-        this.welcomeFrame.setBackground(Color.WHITE);
-        JPanel out = new JPanel();
-        out.setBackground(Color.WHITE);
-        JPanel row1 = new JPanel();
-        row1.setBackground(Color.WHITE);
-        JPanel row2 = new JPanel();
-        row2.setBackground(Color.WHITE);
-        out.setLayout(new BoxLayout(out, BoxLayout.Y_AXIS));
-
-        ImageIcon ii = new ImageIcon(getClass().getResource("res/icons/logo.png"));
-        JLabel iLabel = new JLabel();
-        iLabel.setIcon(ii);
-        row1.add(iLabel, BorderLayout.CENTER);
-
-        JButton make = new JButton("New");
-        make.setFocusPainted(false);
-        make.setIcon(new ImageIcon(getClass().getResource("res/icons/add.png")));
-        make.addActionListener(e -> {
-            this.switchFrame();
-        });
-
-        JButton load = new JButton("Load");
+    /**
+     * add the needed features to a load JButton.
+     * @param load the JButton to which we want to assign the features.
+     */
+    private void addLoadFeatures(JButton load) {
+        load.setText("Load");
         load.setFocusPainted(false);
         load.setIcon(new ImageIcon(getClass().getResource("res/icons/load.png")));
+        // set onClick action.
         load.addActionListener(e -> {
+            // open file explorer.
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setAcceptAllFileFilterUsed(false);
             fileChooser.setFileFilter(new FileNameExtensionFilter("XML files", "xml"));
             int option = fileChooser.showDialog(null, "Open");
             if (option == JFileChooser.APPROVE_OPTION) {
-                File fileToload = fileChooser.getSelectedFile();
+                File fileToLoad = fileChooser.getSelectedFile();
                 DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
                 //an instance of builder to parse the specified xml file
                 DocumentBuilder db = null;
@@ -129,16 +110,17 @@ public class GUI {
                 }
                 Document doc = null;
                 try {
-                    doc = db.parse(fileToload);
-                } catch (SAXException saxException) {
+                    assert db != null;
+                    doc = db.parse(fileToLoad);
+                } catch (SAXException | IOException saxException) {
                     saxException.printStackTrace();
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
                 }
+                assert doc != null;
                 doc.getDocumentElement().normalize();
 
                 NodeList nodeList = doc.getElementsByTagName("PACKAGE");
 
+                // convert packages to table.
                 for (int itr = 0; itr < nodeList.getLength(); itr++) {
                     Node node = nodeList.item(itr);
                     if (node.getNodeType() == Node.ELEMENT_NODE) {
@@ -157,6 +139,7 @@ public class GUI {
 
                 NodeList nodeList2 = doc.getElementsByTagName("CONTAINER");
 
+                // convert bins to table
                 for (int itr = 0; itr < nodeList2.getLength(); itr++) {
                     Node node = nodeList2.item(itr);
                     if (node.getNodeType() == Node.ELEMENT_NODE) {
@@ -175,15 +158,53 @@ public class GUI {
                 this.switchFrame();
             }
         });
+    }
 
+
+    /**
+     * set the home screen.
+     */
+    private void setHomeFrame() {
+        // basic features
+        this.welcomeFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.welcomeFrame.setSize(2 * FRAME_SIZE,FRAME_SIZE);
+        this.welcomeFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        this.welcomeFrame.setMinimumSize(new Dimension(2 * FRAME_SIZE, FRAME_SIZE));
+        this.welcomeFrame.setIconImage(new ImageIcon(getClass().getResource("res/icons/logo.png")).getImage());
+        this.welcomeFrame.setLayout(new BorderLayout());
+        this.welcomeFrame.setBackground(Color.WHITE);
+
+        // add panels
+        JPanel out = new JPanel();
+        out.setBackground(Color.WHITE);
+        JPanel row1 = new JPanel();
+        row1.setBackground(Color.WHITE);
+        JPanel row2 = new JPanel();
+        row2.setBackground(Color.WHITE);
+        out.setLayout(new BoxLayout(out, BoxLayout.Y_AXIS));
+
+        ImageIcon ii = new ImageIcon(getClass().getResource("res/icons/logo.png"));
+        JLabel iLabel = new JLabel();
+        iLabel.setIcon(ii);
+        row1.add(iLabel, BorderLayout.CENTER);
+
+        // add make new button.
+        JButton make = new JButton("New");
+        make.setFocusPainted(false);
+        make.setIcon(new ImageIcon(getClass().getResource("res/icons/add.png")));
+        make.addActionListener(e -> this.switchFrame());
+
+        // add a load button.
+        JButton load = new JButton();
+        this.addLoadFeatures(load);
+
+        // add an exit button.
         JButton exit = new JButton("Exit");
         exit.setFocusPainted(false);
         exit.setIcon(new ImageIcon(getClass().getResource("res/icons/exit.png")));
-        exit.addActionListener(e -> {
-            System.exit(1);
-        });
+        exit.addActionListener(e -> System.exit(1));
 
-
+        // add to panels.
         row2.add(make);
         row2.add(new Label("\t"));
         row2.add(load);
@@ -191,10 +212,15 @@ public class GUI {
         row2.add(exit);
         out.add(row1);
         out.add(row2);
+        // add to frame.
         this.welcomeFrame.add(out);
     }
 
+    /**
+     * set the editing screen.
+     */
     private void setEditFrame() {
+        // set basic features.
         this.editFrame.setLayout(new BoxLayout(this.editFrame.getContentPane(), BoxLayout.Y_AXIS));
         this.editFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.editFrame.setSize(2 * FRAME_SIZE, FRAME_SIZE);
@@ -202,12 +228,15 @@ public class GUI {
         this.editFrame.setMinimumSize(new Dimension(2 * FRAME_SIZE, FRAME_SIZE));
         this.editFrame.setIconImage(new ImageIcon(getClass().getResource("res/icons/logo.png")).getImage());
 
+        // make visual work area panel.
         JPanel visualWorkArea = new JPanel();
         visualWorkArea.setLayout(new BoxLayout(visualWorkArea, BoxLayout.X_AXIS));
 
+        // make controls panel.
         JPanel controls = new JPanel();
         controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
         controls.setBackground(Color.white);
+        // make rows for the controls panel.
         JPanel row1 = new JPanel();
         row1.setBackground(Color.WHITE);
         JPanel row2 = new JPanel();
@@ -218,25 +247,32 @@ public class GUI {
         setContainer(row2);
         setAdd(row3);
 
+        // make buttons.
+        JButton load = new JButton();
+        this.addLoadFeatures(load);
+
         JButton reset = new JButton("Reset");
         reset.setIcon(new ImageIcon(getClass().getResource("res/icons/reset.png")));
         reset.setFocusPainted(false);
 
+        // add onClick
         reset.addActionListener(e -> {
            this.pt.removeAllRows();
            this.containersTable.removeAllRows();
         });
 
+        // show 3D illustration.
         JButton show3d = new JButton("Show 3D");
         show3d.setFocusPainted(false);
         show3d.setEnabled(false);
         show3d.setIcon(new ImageIcon(getClass().getResource("res/icons/3d-model.png")));
         this.jfxBtn = show3d;
 
-
+        // show instructions.
         JButton instructions = new JButton("Show Packing Instructions");
         instructions.setFocusPainted(false);
         instructions.setEnabled(false);
+
 
         this.instructionsFrame.setSize( FRAME_SIZE/2, FRAME_SIZE/2);
         this.insText = new JTextArea();
@@ -257,12 +293,15 @@ public class GUI {
 
         instructions.setIcon(new ImageIcon(getClass().getResource("res/icons/instruction.png")));
 
+        // pack button.
         JButton pack = new JButton("Pack");
         pack.setFocusPainted(false);
+        // pack OnClick.
         pack.addActionListener(e -> {
             this.instructionsFrame.setVisible(false);
             int constraint = this.constraintLevel.getSelectedIndex();
 
+            // convert the tables to bins and packages.
             LinkedList<Bin> bins = new LinkedList<>();
             LinkedList<TableRow> consRows = this.containersTable.getRows();
             LinkedList<Package> packs = new LinkedList<>();
@@ -276,9 +315,8 @@ public class GUI {
                 PackageTableRow ptr = (PackageTableRow)tr;
                 packs.add(ptr.toPack());
             }
+            // find solution
             if(bins.size() > 0 && packs.size() > 0) {
-                this.currBins = bins;
-                this.currPacks = packs;
                 PackingManager pm = new PackingManager(bins, packs, constraint);
                 this.solution = pm.findSolution();
                 //System.out.println(this.solution);
@@ -291,11 +329,13 @@ public class GUI {
 
         pack.setIcon(new ImageIcon(getClass().getResource("res/icons/pack.png")));
 
+        // save button.
         JButton save = new JButton("Save");
-
         save.setIcon(new ImageIcon(getClass().getResource("res/icons/save.png")));
         save.setFocusPainted(false);
+        // save action.
         save.addActionListener(e -> {
+            // open file explorer.
             JFileChooser fileChooser = new JFileChooser();
             int option = fileChooser.showSaveDialog(this.editFrame);
             if (option == JFileChooser.APPROVE_OPTION) {
@@ -329,14 +369,14 @@ public class GUI {
                     DOMSource source = new DOMSource(doc);
                     StreamResult result = new StreamResult(new File(fileToSave.getAbsolutePath() + "-content.xml"));
                     transformer.transform(source, result);
-                } catch (ParserConfigurationException pce) {
+                } catch (ParserConfigurationException | TransformerException pce) {
                     pce.printStackTrace();
-                } catch (TransformerException tfe) {
-                    tfe.printStackTrace();
                 }
             }
         });
 
+        // add to panels.
+        row1.add(load);
         row1.add(reset);
         row1.add(save);
         row1.add(new JLabel("   "));
@@ -354,6 +394,8 @@ public class GUI {
         controls.add(row3);
 
         // Create JScrollPane to add scroll functionality
+
+        // create packages table.
         InputTable pt = new InputTable("Packages",
                 PackageTableRow.NAMES,
                 PackageTableRow.CLASSES);
@@ -363,7 +405,7 @@ public class GUI {
         scroller1.setVisible(true);
         scroller1.setPreferredSize(new Dimension(400,400));
 
-
+        // make containers (bins) table.
         InputTable containers = new InputTable("Containers",
                 ContainerTableRow.NAMES,
                 ContainerTableRow.CLASSES);
@@ -372,27 +414,34 @@ public class GUI {
         scroller2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scroller2.setVisible(true);
         scroller2.setPreferredSize(new Dimension(400,400));
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scroller1, scroller2);
 
+        // make a split pane
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scroller1, scroller2);
         splitPane.setDividerLocation(1600);
         splitPane.setDividerSize(5);
         splitPane.setResizeWeight(0.2);
 
         visualWorkArea.add(splitPane);
 
+        // add to frame.
         this.editFrame.add(controls);
         this.editFrame.add(visualWorkArea);
 
     }
 
 
-
+    /**
+     * set the container editing tools.
+     * @param jp JPanel we will add the tool to.
+     */
     private void setContainer(JPanel jp) {
+        // name field
         JTextField textField = new JTextField(18);
         jp.add(new Label("Name:"));
         jp.add(textField);
         this.conNameInput = textField;
 
+        // set x, y, z and quantity
         SpinnerModel addModel1 = new SpinnerNumberModel(1.0, 1, 10000, 1);
         SpinnerModel addModel2 = new SpinnerNumberModel(1.0, 1, 10000, 1);
         SpinnerModel addModel3 = new SpinnerNumberModel(1.0, 1, 10000, 1);
@@ -404,8 +453,7 @@ public class GUI {
         this.addConSpinnerQ = new JSpinner(addModel4);
         this.addConSpinnerQ.setEnabled(false);
 
-
-
+        // add to JPanel with labels.
         jp.add(new Label("  Width:"));
         jp.add(this.addConSpinnerX);
         jp.add(new Label("  Depth:"));
@@ -415,7 +463,7 @@ public class GUI {
         jp.add(new Label("  Quantity:"));
         jp.add(this.addConSpinnerQ);
 
-
+        // container model picker
         jp.add(new Label("  Set As Container Model"));
         JCheckBox jcb1 = new JCheckBox("", true);
         jcb1.addActionListener(e -> this.addConSpinnerQ.setEnabled(!jcb1.isSelected()));
@@ -423,10 +471,8 @@ public class GUI {
         this.conModel = jcb1;
         jp.add(jcb1);
 
-
+        // add container button.
         JButton addContainer = new JButton("Add Container");
-
-
         addContainer.addActionListener(e -> addContainer());
         addContainer.setFocusPainted(false);
         addContainer.setIcon(new ImageIcon(getClass().getResource("res/icons/container.png")));
@@ -434,35 +480,37 @@ public class GUI {
 
         jp.add(new JLabel(" "));
 
-
+        // remove containers.
         JButton setContainerModel = new JButton("Remove Container");
         setContainerModel.setIcon(new ImageIcon(getClass().getResource("res/icons/rubbish-bin.png")));
 
-        setContainerModel.addActionListener(e -> {
-            this.containersTable.remove();
-        });
+        setContainerModel.addActionListener(e -> this.containersTable.remove());
         setContainerModel.setFocusPainted(false);
         jp.add(setContainerModel);
-
-
         jp.add(new Label("  "));
     }
 
+    /**
+     * add container to the container table.
+     */
     private void addContainer() {
         if (this.hasModel) {
             this.containersTable.removeAllRows();
             this.hasModel = false;
         }
+        // container name
         String name = this.conNameInput.getText();
         if(name.equals("")) {
             name = "Container";
         }
+        // get the w,d,h values.
         String w = this.addConSpinnerX.getValue().toString();
         String d = this.addConSpinnerY.getValue().toString();
         String h = this.addConSpinnerZ.getValue().toString();
         double w1 = Double.parseDouble(w);
         double d1 = Double.parseDouble(d);
         double h1 = Double.parseDouble(h);
+        // add to table.
         if (!this.conModel.isSelected()) {
             String q = this.addConSpinnerQ.getValue().toString();
             ContainerTableRow ctr = new ContainerTableRow(name,
@@ -483,12 +531,18 @@ public class GUI {
         }
     }
 
+    /**
+     * set the add package tools.
+     * @param jp JPanel we will add the tools to.
+     */
     private void setAdd(JPanel jp) {
+        // name area
         JTextField textField = new JTextField(18);
         jp.add(new Label("Name:"));
         jp.add(textField);
         this.nameInput = textField;
 
+        // w,d,h and quantity.
         SpinnerModel addModel1 = new SpinnerNumberModel(1.0, 1, 10000, 1);
         SpinnerModel addModel2 = new SpinnerNumberModel(1.0, 1, 10000, 1);
         SpinnerModel addModel3 = new SpinnerNumberModel(1.0, 1, 10000, 1);
@@ -499,11 +553,11 @@ public class GUI {
         JSpinner as3 = new JSpinner(addModel3);
         JSpinner as4 = new JSpinner(addModel4);
 
+        // add to th JPanel with labels.
         jp.add(new Label("  Width:"));
         jp.add(as1);
         jp.add(new Label("  Depth:"));
         jp.add(as2);
-
         jp.add(new Label("  Height:"));
         jp.add(as3);
         jp.add(new Label("  Quantity:"));
@@ -513,12 +567,14 @@ public class GUI {
         this.addSpinnerY = as2;
         this.addSpinnerZ = as3;
         this.addSpinnerQ = as4;
+        // do not flip box ("this side up").
         jp.add(new Label("  Do Not Flip"));
         JCheckBox jcb1 = new JCheckBox("", false);
         jcb1.setBackground(Color.WHITE);
         this.flip = jcb1;
         jp.add(jcb1);
 
+        // add JButton.
         JButton add = new JButton("Add Package");
 
         SpinnerModel addModel5 = new SpinnerNumberModel(0, 0, 10000, 1);
@@ -535,24 +591,28 @@ public class GUI {
         jp.add(new Label("  "));
 
         JButton r = new JButton("Remove Package");
-        r.addActionListener(e -> {
-            this.pt.remove();
-        });
+        r.addActionListener(e -> this.pt.remove());
         r.setFocusPainted(false);
         r.setIcon(new ImageIcon(getClass().getResource("res/icons/removepackage.png")));
 
         jp.add(r);
-
     }
 
+    /**
+     * pause the screen
+     * @param seconds time to pause in seconds.
+     */
     private static void pause(double seconds)
     {
         try {
             Thread.sleep((long) (seconds * 1000));
-        } catch (InterruptedException e) {}
+        } catch (InterruptedException ignored) {}
     }
 
 
+    /**
+     * switch between home frame to editing frame.
+     */
     private void switchFrame() {
         this.editFrame.setVisible(true);
         pause(0.5);
@@ -560,17 +620,20 @@ public class GUI {
     }
 
 
+    /**
+     * add a box (package) to the packages table.
+     */
     private void addBox() {
+        // parse the values.
         double q = Double.parseDouble(this.addSpinnerQ.getValue().toString());
         String name = this.nameInput.getText();
-
         String x = this.addSpinnerX.getValue().toString();
         String y = this.addSpinnerY.getValue().toString();
         String z = this.addSpinnerZ.getValue().toString();
-
         boolean f = this.flip.isSelected();
-
         String g = this.groupSpinner.getValue().toString();
+
+        // add rows to the table.
         for (int i = 0; i < q; i++) {
             String n = name;
             if (name.equals("")) {
@@ -587,10 +650,18 @@ public class GUI {
         }
     }
 
+    /**
+     * get the show 3D illustration button.
+     * @return JButton
+     */
     public JButton get3DBtn() {
         return this.jfxBtn;
     }
 
+    /**
+     * get the generated solution.
+     * @return Solution.
+     */
     public Solution getSolution() {
         return this.solution;
     }

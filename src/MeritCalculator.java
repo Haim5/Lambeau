@@ -1,35 +1,40 @@
+/**
+ * Merit Calculator.
+ */
 public abstract class MeritCalculator {
 
-    private Orientation bestO = null;
-    private EP bestEP = null;
     private int worst = 0;
 
+    /**
+     * calculate the merit score of placing p in b.
+     * @param p package
+     * @param b bin
+     * @return int - score.
+     */
     public abstract int calc(Package p, Bin b);
 
+    /**
+     * return which score is better.
+     * @param score1 score
+     * @param score2 score
+     * @return if score1 is better than score2 - true, else - false.
+     */
     public boolean isBetter(int score1, int score2) {
         return score1 >= score2;
     }
 
-    public Orientation getBestOrientation() {
-        return this.bestO;
-    }
-
-    public EP getBestEP() {
-        return this.bestEP;
-    }
-
-    protected void setBestEP(EP e) {
-        this.bestEP = e;
-    }
-
-    protected void setBestO(Orientation o) {
-        this.bestO = o;
-    }
-
+    /**
+     * get the worst possible score.
+     * @return int
+     */
     public int getWorst() {
         return this.worst;
     }
 
+    /**
+     * set the worst possible score.
+     * @param w worst possible score.
+     */
     protected void setWorst(int w) {
         this.worst = w;
     }

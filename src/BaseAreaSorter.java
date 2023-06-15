@@ -1,11 +1,20 @@
 import java.util.Comparator;
 
+/**
+ * sort packages by base area.
+ */
 public class BaseAreaSorter extends BasicSorter {
 
+    /**
+     * Constructor
+     */
     public BaseAreaSorter() {
         this.setComparator(new BaseAreaComparator());
     }
 
+    /**
+     * base area comparator
+     */
     private static class BaseAreaComparator implements Comparator<Package> {
         @Override
         public int compare(Package o1, Package o2) {

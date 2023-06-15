@@ -1,11 +1,22 @@
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import java.util.ArrayList;
-
+/**
+ * TableRow interface
+ */
 public interface TableRow {
 
-    public Object getValueAt(int column);
+    /**
+     * get the values at the given column
+     * @param column the col number
+     * @return Object
+     */
+    Object getValueAt(int column);
 
+    /**
+     * append data to xml document
+     * @param doc the document
+     * @param e the element to append
+     */
     void appendXml(Document doc, Element e);
 }

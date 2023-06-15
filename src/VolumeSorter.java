@@ -1,12 +1,16 @@
 import java.util.Comparator;
 
-
+/**
+ * Sort Packages by volume
+ */
 public class VolumeSorter extends BasicSorter {
     public VolumeSorter() {
         this.setComparator(new VolumeComparator());
     }
 
-
+    /**
+     * Volume comparator
+     */
     private static class VolumeComparator implements Comparator<Package> {
 
         @Override

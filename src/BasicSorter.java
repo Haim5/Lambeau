@@ -25,6 +25,10 @@ public abstract class BasicSorter implements Sorter {
         return this.sort(l, false);
     }
 
+    /**
+     * set which comparator to use.
+     * @param p package comparator.
+     */
     protected void setComparator(Comparator<Package> p) {
         this.comp = p;
     }
