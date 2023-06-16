@@ -206,8 +206,8 @@ public class SolutionValidityCheck {
          * @return Solution.
          */
         public Solution solve() {
-            PackingManager pm = new PackingManager(this.bins, this.packages, this.constraint);
-            return pm.findSolution();
+            PackingProblemSolver3D pm = new PackingProblemSolver3D(new PackingProblemDefinition(this.bins, this.packages, this.constraint));
+            return pm.findBestSolution();
         }
     }
 

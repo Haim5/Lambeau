@@ -19,30 +19,6 @@ public class Solution {
         this.bins = bins;
         this.cannotPlace = cannotPlace;
     }
-
-    /**
-     * check if this solution is better.
-     * @param other another solution
-     * @return true if this solution is better. ow - false.
-     */
-    public boolean isBetter(Solution other) {
-        if(this.unpacked() == other.unpacked()) {
-            // number of unpacked is tied. decide by the number of bins used.
-            return this.numOfBins() < other.numOfBins();
-        }
-        // the better solution is the solution with less unpacked packages.
-        return this.unpacked() < other.unpacked();
-    }
-
-    /**
-     * is this solution an optimal solution.
-     * @param min minimal number of bins needed for a valid solution.
-     * @return true if all packages are packed and the the number of bins is minimal.
-     */
-    public boolean isOptimal(int min) {
-        return (this.unpacked() == 0 && this.numOfBins() == min);
-    }
-
     /**
      * get the unpacked packages
      * @return list of packages

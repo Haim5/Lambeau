@@ -32,6 +32,14 @@ public class Packer {
         this.placer = placer;
     }
 
+    /**
+     * Constructor
+     * @param config packer configuration.
+     */
+    public Packer(PackerConfiguration config) {
+        this(config.getPlacer(), config.getSorter(), config.getBins(), config.getPackages());
+    }
+
 
     /**
      * pack the packages inside the bins.
