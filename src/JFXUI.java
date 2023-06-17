@@ -30,7 +30,7 @@ public class JFXUI extends Application {
     private double anchorAngleY = 0;
     private final DoubleProperty angleX = new SimpleDoubleProperty(0);
     private final DoubleProperty angleY = new SimpleDoubleProperty(0);
-    private static final int BUFFER = 30;
+    private static final int BUFFER = 120;
     private static final int WINDOW_SIZE = 500;
     private GUI gui;
 

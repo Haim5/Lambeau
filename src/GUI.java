@@ -30,8 +30,8 @@ public class GUI {
 
     // JFrames.
     private final JFrame welcomeFrame = new JFrame("Lambeau");
-    private final JFrame editFrame = new JFrame("Lambeau");
-    private final JFrame instructionsFrame = new JFrame("Instructions");
+    private final JFrame editFrame = new JFrame("Lambeau - Editor");
+    private final JFrame instructionsFrame = new JFrame("Lambeau - Instructions");
 
     // JSpinners.
     private JSpinner groupSpinner;

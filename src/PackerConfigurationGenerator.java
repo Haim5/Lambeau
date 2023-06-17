@@ -7,13 +7,14 @@ import java.util.List;
  */
 public class PackerConfigurationGenerator {
     // optimal lambda values
-    private final List<Integer> OPT1 = new ArrayList<>(Arrays.asList(
-            21, 22, 23, 24, 50, 51, 52, 53, 54, 55, 56, 57));
-    private final List<Integer> OPT2 = new ArrayList<>(Arrays.asList(
-            15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60));
-    private final List<Integer> OPT3 = new ArrayList<>(Arrays.asList(5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15));
-    private final List<Integer> OPT4 = new ArrayList<>(Arrays.asList(5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+    private final List<Integer> OPT1 = new ArrayList<>(Arrays.asList(5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15));
+    private final List<Integer> OPT2 = new ArrayList<>(Arrays.asList(5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
             19, 20, 21, 22, 23, 24, 25));
+    private final List<Integer> OPT3 = new ArrayList<>(Arrays.asList(
+            21, 22, 23, 24, 50, 51, 52, 53, 54, 55, 56, 57));
+    private final List<Integer> OPT4 = new ArrayList<>(Arrays.asList(
+            15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60));
+
     private final PackingProblemDefinition ppd;
 
     private final List<List<Integer>> optimalList = new ArrayList<>(Arrays.asList(OPT1, OPT2, OPT3, OPT4));
@@ -53,16 +54,16 @@ public class PackerConfigurationGenerator {
         int lambda = currOptimal.get(this.optValueIndex++);
         return switch (this.optListIndex) {
             case 0 -> new PackerConfiguration(new BFD(new RSMC()),
-                    new ClusteredDeliverySorter(new ClusteredHeightAreaSorter(new Bin(this.ppd.getBins().get(0)), lambda), this.ppd.getConstraintLevel()),
+                    new ClusteredDeliverySorter(new ClusteredAreaHeightSorter(new Bin(this.ppd.getBins().get(0)), lambda), this.ppd.getConstraintLevel()),
                     this.ppd);
             case 1 -> new PackerConfiguration(new FFD(),
-                    new ClusteredDeliverySorter(new ClusteredHeightAreaSorter(new Bin(this.ppd.getBins().get(0)), lambda), this.ppd.getConstraintLevel()),
+                    new ClusteredDeliverySorter(new ClusteredAreaHeightSorter(new Bin(this.ppd.getBins().get(0)), lambda), this.ppd.getConstraintLevel()),
                     this.ppd);
             case 2 -> new PackerConfiguration(new BFD(new RSMC()),
-                    new ClusteredDeliverySorter(new ClusteredAreaHeightSorter(new Bin(this.ppd.getBins().get(0)), lambda), this.ppd.getConstraintLevel()),
+                    new ClusteredDeliverySorter(new ClusteredHeightAreaSorter(new Bin(this.ppd.getBins().get(0)), lambda), this.ppd.getConstraintLevel()),
                     this.ppd);
             case 3 -> new PackerConfiguration(new FFD(),
-                    new ClusteredDeliverySorter(new ClusteredAreaHeightSorter(new Bin(this.ppd.getBins().get(0)), lambda), this.ppd.getConstraintLevel()),
+                    new ClusteredDeliverySorter(new ClusteredHeightAreaSorter(new Bin(this.ppd.getBins().get(0)), lambda), this.ppd.getConstraintLevel()),
                     this.ppd);
             default -> null;
         };
