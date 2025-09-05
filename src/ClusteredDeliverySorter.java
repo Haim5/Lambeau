@@ -1,11 +1,8 @@
-import java.util.*;
-
 /**
  * Clustered delivery sorter - clustered sorting by the delivery group of the package.
  */
 public class ClusteredDeliverySorter extends ClusteredSorter {
     private final int lambda;
-    private final ClusteredSorter sorter;
 
     /**
      * Constructor
@@ -14,7 +11,6 @@ public class ClusteredDeliverySorter extends ClusteredSorter {
      */
     public ClusteredDeliverySorter(ClusteredSorter cs, int lambda) {
         super(1, cs, lambda);
-        this.sorter = cs;
         this.lambda = lambda;
     }
 
@@ -24,19 +20,14 @@ public class ClusteredDeliverySorter extends ClusteredSorter {
     }
 
     @Override
-    public List<Package> sort(List<Package> l) {
-        List<Package> ans;
-        if (this.lambda == 0) {
-            return this.sorter.sort(l);
-        }
-        return super.sort(l);
-    }
-
-    @Override
     protected int getIndex(int val) {
         if (this.lambda == 0) {
             return 0;
         }
-        return (int)(Math.ceil((double)(this.lambda * val) / 10.0));
+        if (this.lambda >= 10) {
+            return val;
+        }
+        double groupSize = 10.0 / this.lambda;
+        return (int) (val / groupSize);
     }
 }

@@ -132,22 +132,32 @@ public class EP {
      * @param where the point in was placed on.
      */
     public void update(Orientation k, Point where) {
-        int x1 = this.p.getX();
-        int y1 = this.p.getY();
-        int z1 = this.p.getZ();
-        int x2 = where.getX();
-        int y2 = where.getY();
-        int z2 = where.getZ();
-        if (z1 >= z2 && z1 < k.getH() + z2) {
-            if (x1 <= x2 && y2 <= y1 && y1 <= y2 + k.getD()) {
-                this.rsx = Math.min(this.rsx, x2 - x1);
-            }
-            if (y1 <= y2 && x2 <= x1 && x1 <= x2 + k.getW()) {
-                this.rsy = Math.min(this.rsy, y2 - y1);
-            }
+
+        int p_x = this.p.getX();
+        int p_y = this.p.getY();
+        int p_z = this.p.getZ();
+
+        int pack_x = where.getX();
+        int pack_y = where.getY();
+        int pack_z = where.getZ();
+
+        int pack_w = k.getW();
+        int pack_d = k.getD();
+        int pack_h = k.getH();
+
+        // Update rsx
+        if (p_x < pack_x + pack_w && p_y >= pack_y && p_y < pack_y + pack_d && p_z >= pack_z && p_z < pack_z + pack_h) {
+            this.rsx = Math.min(this.rsx, pack_x - p_x);
         }
-        if (z1 <= z2 && y2 <= y1 && y1 <= y2 + k.getD() && x2 <= x1 && x1 <= x2 + k.getW()) {
-            this.rsz = Math.min(this.rsz, z2 - z1);
+
+        // Update rsy
+        if (p_y < pack_y + pack_d && p_x >= pack_x && p_x < pack_x + pack_w && p_z >= pack_z && p_z < pack_z + pack_h) {
+            this.rsy = Math.min(this.rsy, pack_y - p_y);
+        }
+
+        // Update rsz
+        if (p_z < pack_z + pack_h && p_x >= pack_x && p_x < pack_x + pack_w && p_y >= pack_y && p_y < pack_y + pack_d) {
+            this.rsz = Math.min(this.rsz, pack_z - p_z);
         }
     }
 }

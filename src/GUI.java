@@ -19,7 +19,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedList;
-
+import java.net.URL;
 
 /**
  * GUI class.
@@ -63,12 +63,19 @@ public class GUI {
     private Solution solution;
     private long id = 0;
     private boolean hasModel = false;
-
+    
     /**
      * Constructor.
      */
     public GUI() {
         // init the frames.
+        URL url = GUI.class.getResource("/icons/logo.png");
+        System.out.println("DEBUG: /icons/logo.png = " + url);
+
+        if (url == null) {
+            throw new IllegalStateException("Resource not found: /icons/logo.png. " +
+                    "Check that src/main/resources/icons/logo.png exists and is copied to build/resources/main/icons/");
+        }
         this.setEditFrame();
         this.setHomeFrame();
     }
@@ -90,7 +97,7 @@ public class GUI {
     private void addLoadFeatures(JButton load) {
         load.setText("Load");
         load.setFocusPainted(false);
-        load.setIcon(new ImageIcon(getClass().getResource("res/icons/load.png")));
+        load.setIcon(new ImageIcon(getClass().getResource("/icons/load.png")));
         // set onClick action.
         load.addActionListener(e -> {
             // open file explorer.
@@ -170,7 +177,7 @@ public class GUI {
         this.welcomeFrame.setSize(2 * FRAME_SIZE,FRAME_SIZE);
         this.welcomeFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.welcomeFrame.setMinimumSize(new Dimension(2 * FRAME_SIZE, FRAME_SIZE));
-        this.welcomeFrame.setIconImage(new ImageIcon(getClass().getResource("res/icons/logo.png")).getImage());
+        this.welcomeFrame.setIconImage(new ImageIcon(getClass().getResource("/icons/logo.png")).getImage());
         this.welcomeFrame.setLayout(new BorderLayout());
         this.welcomeFrame.setBackground(Color.WHITE);
 
@@ -183,7 +190,7 @@ public class GUI {
         row2.setBackground(Color.WHITE);
         out.setLayout(new BoxLayout(out, BoxLayout.Y_AXIS));
 
-        ImageIcon ii = new ImageIcon(getClass().getResource("res/icons/logo.png"));
+        ImageIcon ii = new ImageIcon(getClass().getResource("/icons/logo.png"));
         JLabel iLabel = new JLabel();
         iLabel.setIcon(ii);
         row1.add(iLabel, BorderLayout.CENTER);
@@ -191,7 +198,7 @@ public class GUI {
         // add make new button.
         JButton make = new JButton("New");
         make.setFocusPainted(false);
-        make.setIcon(new ImageIcon(getClass().getResource("res/icons/add.png")));
+        make.setIcon(new ImageIcon(getClass().getResource("/icons/add.png")));
         make.addActionListener(e -> this.switchFrame());
 
         // add a load button.
@@ -201,7 +208,7 @@ public class GUI {
         // add an exit button.
         JButton exit = new JButton("Exit");
         exit.setFocusPainted(false);
-        exit.setIcon(new ImageIcon(getClass().getResource("res/icons/exit.png")));
+        exit.setIcon(new ImageIcon(getClass().getResource("/icons/exit.png")));
         exit.addActionListener(e -> System.exit(1));
 
         // add to panels.
@@ -226,7 +233,7 @@ public class GUI {
         this.editFrame.setSize(2 * FRAME_SIZE, FRAME_SIZE);
         this.editFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.editFrame.setMinimumSize(new Dimension(2 * FRAME_SIZE, FRAME_SIZE));
-        this.editFrame.setIconImage(new ImageIcon(getClass().getResource("res/icons/logo.png")).getImage());
+        this.editFrame.setIconImage(new ImageIcon(getClass().getResource("/icons/logo.png")).getImage());
 
         // make visual work area panel.
         JPanel visualWorkArea = new JPanel();
@@ -252,7 +259,7 @@ public class GUI {
         this.addLoadFeatures(load);
 
         JButton reset = new JButton("Reset");
-        reset.setIcon(new ImageIcon(getClass().getResource("res/icons/reset.png")));
+        reset.setIcon(new ImageIcon(getClass().getResource("/icons/reset.png")));
         reset.setFocusPainted(false);
 
         // add onClick
@@ -265,7 +272,7 @@ public class GUI {
         JButton show3d = new JButton("Show 3D");
         show3d.setFocusPainted(false);
         show3d.setEnabled(false);
-        show3d.setIcon(new ImageIcon(getClass().getResource("res/icons/3d-model.png")));
+        show3d.setIcon(new ImageIcon(getClass().getResource("/icons/3d-model.png")));
         this.jfxBtn = show3d;
 
         // show instructions.
@@ -291,7 +298,7 @@ public class GUI {
 
         });
 
-        instructions.setIcon(new ImageIcon(getClass().getResource("res/icons/instruction.png")));
+        instructions.setIcon(new ImageIcon(getClass().getResource("/icons/instruction.png")));
 
         // pack button.
         JButton pack = new JButton("Pack");
@@ -327,11 +334,11 @@ public class GUI {
             }
         });
 
-        pack.setIcon(new ImageIcon(getClass().getResource("res/icons/pack.png")));
+        pack.setIcon(new ImageIcon(getClass().getResource("/icons/pack.png")));
 
         // save button.
         JButton save = new JButton("Save");
-        save.setIcon(new ImageIcon(getClass().getResource("res/icons/save.png")));
+        save.setIcon(new ImageIcon(getClass().getResource("/icons/save.png")));
         save.setFocusPainted(false);
         // save action.
         save.addActionListener(e -> {
@@ -475,14 +482,14 @@ public class GUI {
         JButton addContainer = new JButton("Add Container");
         addContainer.addActionListener(e -> addContainer());
         addContainer.setFocusPainted(false);
-        addContainer.setIcon(new ImageIcon(getClass().getResource("res/icons/container.png")));
+        addContainer.setIcon(new ImageIcon(getClass().getResource("/icons/container.png")));
         jp.add(addContainer);
 
         jp.add(new JLabel(" "));
 
         // remove containers.
         JButton setContainerModel = new JButton("Remove Container");
-        setContainerModel.setIcon(new ImageIcon(getClass().getResource("res/icons/rubbish-bin.png")));
+        setContainerModel.setIcon(new ImageIcon(getClass().getResource("/icons/rubbish-bin.png")));
 
         setContainerModel.addActionListener(e -> this.containersTable.remove());
         setContainerModel.setFocusPainted(false);
@@ -586,14 +593,14 @@ public class GUI {
 
         add.addActionListener(e -> addBox());
         add.setFocusPainted(false);
-        add.setIcon(new ImageIcon(getClass().getResource("res/icons/addpackage.png")));
+        add.setIcon(new ImageIcon(getClass().getResource("/icons/addpackage.png")));
         jp.add(add);
         jp.add(new Label("  "));
 
         JButton r = new JButton("Remove Package");
         r.addActionListener(e -> this.pt.remove());
         r.setFocusPainted(false);
-        r.setIcon(new ImageIcon(getClass().getResource("res/icons/removepackage.png")));
+        r.setIcon(new ImageIcon(getClass().getResource("/icons/removepackage.png")));
 
         jp.add(r);
     }
