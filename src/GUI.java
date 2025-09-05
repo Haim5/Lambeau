@@ -69,13 +69,6 @@ public class GUI {
      */
     public GUI() {
         // init the frames.
-        URL url = GUI.class.getResource("/icons/logo.png");
-        System.out.println("DEBUG: /icons/logo.png = " + url);
-
-        if (url == null) {
-            throw new IllegalStateException("Resource not found: /icons/logo.png. " +
-                    "Check that src/main/resources/icons/logo.png exists and is copied to build/resources/main/icons/");
-        }
         this.setEditFrame();
         this.setHomeFrame();
     }
