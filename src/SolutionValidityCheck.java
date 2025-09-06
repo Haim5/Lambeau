@@ -30,9 +30,9 @@ public class SolutionValidityCheck {
                     return false;
                 }
                 // check for overlap with other packages
-                for (int x = p.getX(); x < o.getW(); x++) {
-                    for(int y = p.getY(); y < o.getD(); y++) {
-                        for(int z = p.getZ(); z < o.getH(); z++) {
+                for (int x = p.getX(); x < p.getX() + o.getW(); x++) {
+                    for(int y = p.getY(); y < p.getY() + o.getD(); y++) {
+                        for(int z = p.getZ(); z < p.getZ() + o.getH(); z++) {
                             if(arr[x][y][z]) {
                                 // overlap found
                                 return false;
@@ -52,78 +52,56 @@ public class SolutionValidityCheck {
      * Generate the cases for the test.
      */
     private void genCases() {
-        // single package
-        this.cases.add(new Case(new Bin(1,1,1), new Package(1,1,1, true, "p"), 0));
-        // can't fit single package
-        this.cases.add(new Case(new Bin(1,1,1), new Package(1,2,1, true, "p"), 0));
+        // --- Basic Cases ---
+        this.cases.add(new Case(new Bin(10, 10, 10), new Package(10, 10, 10, true, "perfect-fit"), 0));
+        this.cases.add(new Case(new Bin(10, 10, 10), new Package(11, 10, 10, true, "impossible-fit"), 0));
 
-        LinkedList<Bin> b = new LinkedList<>();
-        b.add(new Bin(1,30,10));
-        b.add(new Bin(2,3,20));
-        b.add(new Bin(2, 4, 3));
+        // --- Volumetric Mismatch Case ---
+        // Total package volume (2000) > bin volume (1000), so some should be unpacked.
+        Bin volumeTestBin = new Bin(10, 10, 10);
+        LinkedList<Package> smallPackages = new LinkedList<>();
+        for (int i = 0; i < 200; i++) {
+            smallPackages.add(new Package(1, 2, 5, true, "small-" + i));
+        }
+        this.cases.add(new Case(volumeTestBin, smallPackages, 0));
 
-        for(Bin b1 : b) {
-            LinkedList<Package> p1 = new LinkedList<>();
-            for(int i = 0; i < 10; i++) {
-                p1.add(new Package(2,3,5, true, String.valueOf(i)));
+        // --- Standard Cases with different constraints and flip options ---
+        LinkedList<Bin> standardBins = new LinkedList<>();
+        standardBins.add(new Bin("BinA", 10, 30, 10));
+        standardBins.add(new Bin("BinB", 12, 13, 20));
+        standardBins.add(new Bin("BinC", 15, 14, 13));
+
+        int[] constraintLevels = {0, 5, 9};
+        boolean[] flipOptions = {true, false};
+
+        for (Bin b1 : standardBins) {
+            for (int constraint : constraintLevels) {
+                for (boolean canFlip : flipOptions) {
+                    LinkedList<Package> packages = new LinkedList<>();
+                    for (int i = 0; i < 10; i++) {
+                        packages.add(new Package(2, 3, 5, canFlip, "p-" + i));
+                    }
+                    this.cases.add(new Case(new Bin(b1), packages, constraint));
+                }
             }
-            this.cases.add(new Case(b1, p1, 0));
         }
 
-        for(Bin b1 : b) {
-            LinkedList<Package> p1 = new LinkedList<>();
-            for(int i = 0; i < 10; i++) {
-                p1.add(new Package(2,3,5, false, String.valueOf(i)));
-            }
-            this.cases.add(new Case(b1, p1, 0));
+        // --- Edge Cases with different package shapes ---
+        Bin edgeCaseBin = new Bin("EdgeCaseBin", 20, 20, 20);
+        LinkedList<Package> edgePackages = new LinkedList<>();
+        // Add "plates"
+        for (int i = 0; i < 5; i++) {
+            edgePackages.add(new Package(10, 1, 10, true, "plate-" + i));
         }
-
-        // constraint level 5
-        for(Bin b1 : b) {
-            LinkedList<Package> p1 = new LinkedList<>();
-            for(int i = 0; i < 10; i++) {
-                p1.add(new Package(2,3,5, true, String.valueOf(i)));
-            }
-            this.cases.add(new Case(b1, p1, 5));
+        // Add "sticks"
+        for (int i = 0; i < 5; i++) {
+            edgePackages.add(new Package(1, 18, 1, true, "stick-" + i));
         }
-
-        for(Bin b1 : b) {
-            LinkedList<Package> p1 = new LinkedList<>();
-            for(int i = 0; i < 10; i++) {
-                p1.add(new Package(2,3,5, false, String.valueOf(i)));
-            }
-            this.cases.add(new Case(b1, p1, 5));
+        // Add "cubes"
+        for (int i = 0; i < 5; i++) {
+            edgePackages.add(new Package(4, 4, 4, true, "cube-" + i));
         }
-
-        // constraint level - 9
-        for(Bin b1 : b) {
-            LinkedList<Package> p1 = new LinkedList<>();
-            for(int i = 0; i < 10; i++) {
-                p1.add(new Package(2,3,5, true, String.valueOf(i)));
-            }
-            this.cases.add(new Case(b1, p1, 9));
-        }
-
-        for(Bin b1 : b) {
-            LinkedList<Package> p1 = new LinkedList<>();
-            for(int i = 0; i < 10; i++) {
-                p1.add(new Package(2,3,5, false, String.valueOf(i)));
-            }
-            this.cases.add(new Case(new Bin(b1), p1, 9));
-        }
-
-        LinkedList<Package> p2 = new LinkedList<>();
-        for(int i = 0; i < 10; i++) {
-            p2.add(new Package(4,3,5, false, String.valueOf(i)));
-        }
-        this.cases.add(new Case(b, p2, 0));
-
-        LinkedList<Package> p3 = new LinkedList<>();
-        for(int i = 0; i < 10; i++) {
-            boolean flip = (i % 2 == 0);
-            p3.add(new Package(2,3,5, flip, String.valueOf(i)));
-        }
-        this.cases.add(new Case(b, p3, 0));
+        this.cases.add(new Case(edgeCaseBin, edgePackages, 0));
     }
 
     /**
@@ -218,6 +196,5 @@ public class SolutionValidityCheck {
     public static void main(String[] args) {
         SolutionValidityCheck svc = new SolutionValidityCheck();
         svc.test();
-
     }
 }
