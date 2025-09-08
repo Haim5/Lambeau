@@ -4,5 +4,5 @@ Container packing algorithm using the [Extreme Points approach](https://www.cirr
 ## Packages
 <ul>
   <li>Swing</li>
-  <li>JavaFX</li>
+  <li>[JavaFX](https://openjfx.io/)</li>
 </ul>
