@@ -83,16 +83,6 @@ public class Bin {
      */
     public void put(Package p, EP where, Orientation how) {
         this.leftVolume -= p.getVolume();
-        putHelp(p, where, how);
-    }
-
-    /**
-     * help function.
-     * @param p package
-     * @param where extreme point - EP
-     * @param how Orientation.
-     */
-    private void putHelp(Package p, EP where, Orientation how) {
         // remove the ep from the map
         this.epMap.remove(where.getPoint());
         Set<Point> pts = this.epMap.keySet();

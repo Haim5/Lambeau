@@ -137,18 +137,6 @@ public class SolutionValidityCheck {
         private final int constraint;
 
         /**
-         * Constructor
-         * @param bins bins.
-         * @param packages packages.
-         * @param constraint constraint level.
-         */
-        public Case(List<Bin> bins, List<Package> packages, int constraint) {
-            this.bins = bins;
-            this.packages = packages;
-            this.constraint = constraint;
-        }
-
-        /**
          * Constructor with single bin.
          * @param bin a bin.
          * @param packages packages.
