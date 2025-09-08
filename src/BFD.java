@@ -38,7 +38,7 @@ public class BFD implements Placer {
                         // check if the bin can be placed in ep at this orientation.
                         if (ep.canPut(o)) {
                             // calculate score
-                            int score = this.mc.calc(p, b);
+                            int score = this.mc.calc(o, ep);
                             // check if it is the best score
                             if (this.mc.isBetter(score, bestScore)) {
                                 bestScore = score;

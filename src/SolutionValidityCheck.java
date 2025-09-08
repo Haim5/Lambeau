@@ -131,7 +131,7 @@ public class SolutionValidityCheck {
     /**
      * Case class.
      */
-    private static class Case {
+    static class Case {
         private final List<Bin> bins;
         private final List<Package> packages;
         private final int constraint;

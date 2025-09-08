@@ -7,11 +7,11 @@ public abstract class MeritCalculator {
 
     /**
      * calculate the merit score of placing p in b.
-     * @param p package
-     * @param b bin
+     * @param o orientation
+     * @param ep extreme point
      * @return int - score.
      */
-    public abstract int calc(Package p, Bin b);
+    public abstract int calc(Orientation o, EP ep);
 
     /**
      * return which score is better.

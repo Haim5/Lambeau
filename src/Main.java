@@ -8,7 +8,6 @@ class Main {
      * @throws Exception exception.
      */
     public static void main(String[] args) throws Exception {
-        // run the javaFX UI.
         JFXUI.main(args);
     }
 }
