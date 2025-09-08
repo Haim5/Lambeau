@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
 /**
  * Packer class.
  */
@@ -14,30 +13,22 @@ public class Packer {
     private final Placer placer;
     private Solution solution;
 
-    /**
-     * Constructor
-     * @param placer placing heuristic.
-     * @param sorter package sorter.
-     * @param bins bins.
-     * @param packages packages.
-     */
-    public Packer(Placer placer, Sorter sorter, List<Bin> bins, List<Package> packages) {
-        if (bins.size() == 1) {
-            // set bin model.
-            this.binModel = new Bin(bins.get(0));
-        }
-        this.bins = bins;
-        this.packages = packages;
-        this.sorter = sorter;
-        this.placer = placer;
-    }
 
     /**
      * Constructor
      * @param config packer configuration.
      */
     public Packer(PackerConfiguration config) {
-        this(config.getPlacer(), config.getSorter(), config.getBins(), config.getPackages());
+        this.placer = config.getPlacer();
+        this.sorter = config.getSorter();
+        this.bins = config.getBins();
+        this.packages = config.getPackages();
+
+        List<ContainerTableRow> containerRows = config.getContainerTableRows();
+        // A bin model is used if there is exactly one type of container, and its quantity is infinite.
+        if (containerRows != null && containerRows.size() == 1 && containerRows.get(0).getQuantity() == Double.POSITIVE_INFINITY) {
+            this.binModel = new Bin(this.bins.get(0));
+        }
     }
 
 

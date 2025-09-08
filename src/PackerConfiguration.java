@@ -9,6 +9,7 @@ public class PackerConfiguration {
     private final Sorter sorter;
     private final List<Bin> bins;
     private final List<Package> packages;
+    private List<ContainerTableRow> containerTableRows; // Can be null
 
     /**
      * Constructor
@@ -22,6 +23,7 @@ public class PackerConfiguration {
         this.sorter = sorter;
         this.packages = packages;
         this.bins = this.copyBins(bins);
+        this.containerTableRows = null;
     }
 
     /**
@@ -32,6 +34,17 @@ public class PackerConfiguration {
      */
     public PackerConfiguration(Placer placer, Sorter sorter, PackingProblemDefinition ppd) {
         this(placer, sorter, ppd.getBins(), ppd.getPackages());
+        if (ppd.getContainerTableRows() != null) {
+            this.containerTableRows = new LinkedList<>(ppd.getContainerTableRows());
+        }
+    }
+
+    /**
+     * get the container table rows.
+     * @return list of container table rows.
+     */
+    public List<ContainerTableRow> getContainerTableRows() {
+        return this.containerTableRows;
     }
 
     /**

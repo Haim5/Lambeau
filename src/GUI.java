@@ -316,7 +316,7 @@ public class GUI {
             }
             // find solution
             if(bins.size() > 0 && packs.size() > 0) {
-                PackingProblemSolver3D pm = new PackingProblemSolver3D(new PackingProblemDefinition(bins, packs, constraint));
+                PackingProblemSolver3D pm = new PackingProblemSolver3D(new PackingProblemDefinition(bins, packs, constraint, consRows));
                 this.solution = pm.findBestSolution();
                 //System.out.println(this.solution);
                 if (this.solution != null) {
