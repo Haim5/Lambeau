@@ -8,7 +8,7 @@ public class HeightSorter extends BasicSorter {
      * Constructor.
      */
     public HeightSorter() {
-        this.setComparator(new HeightComparator());
+        super(new HeightComparator());
     }
 
     /**

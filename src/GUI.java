@@ -664,7 +664,4 @@ public class GUI {
     public Solution getSolution() {
         return this.solution;
     }
-
-
-
 }

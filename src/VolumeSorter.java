@@ -5,7 +5,7 @@ import java.util.Comparator;
  */
 public class VolumeSorter extends BasicSorter {
     public VolumeSorter() {
-        this.setComparator(new VolumeComparator());
+        super(new VolumeComparator());
     }
 
     /**

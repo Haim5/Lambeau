@@ -1,4 +1,3 @@
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -6,30 +5,31 @@ import java.util.List;
 /**
  * See it. Say it. Sorted.
  */
-public abstract class BasicSorter implements Sorter {
-    private Comparator<Package> comp;
+public class BasicSorter implements Sorter {
+    private final Comparator<Package> comp;
+
+    /**
+     * Constructor.
+     * @param p package comparator.
+     */
+    public BasicSorter(Comparator<Package> p) {
+        this.comp = p;
+    }
 
     public List<Package> sort(List<Package> l, boolean isDescending) {
-        LinkedList<Package> ans = new LinkedList<>();
-        if(l != null) {
-            ans.addAll(l);
-            Collections.sort(ans, this.comp);
-            if (isDescending) {
-                Collections.reverse(ans);
-            }
+        if (l == null) {
+            return new LinkedList<>();
+        }
+        List<Package> ans = new LinkedList<>(l);
+        if (isDescending) {
+            ans.sort(this.comp.reversed());
+        } else {
+            ans.sort(this.comp);
         }
         return ans;
     }
 
     public List<Package> sort(List<Package> l) {
-        return this.sort(l, false);
-    }
-
-    /**
-     * set which comparator to use.
-     * @param p package comparator.
-     */
-    protected void setComparator(Comparator<Package> p) {
-        this.comp = p;
+        return this.sort(l, true); // default set to true
     }
 }

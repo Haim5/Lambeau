@@ -9,7 +9,7 @@ public class BaseAreaSorter extends BasicSorter {
      * Constructor
      */
     public BaseAreaSorter() {
-        this.setComparator(new BaseAreaComparator());
+        super(new BaseAreaComparator());
     }
 
     /**
