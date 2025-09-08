@@ -30,6 +30,6 @@ public class BasicSorter implements Sorter {
     }
 
     public List<Package> sort(List<Package> l) {
-        return this.sort(l, true); // default set to true
+        return this.sort(l, false); // default set to false
     }
 }
