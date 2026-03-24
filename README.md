@@ -5,15 +5,20 @@ A 3D container packing solver implemented in Java, using the [Extreme Points app
 ## Requirements
 
 - Java 21+
-- JavaFX 21
 
-## Build & Run
+JavaFX is managed automatically by Gradle — no manual installation needed.
+
+## Getting Started
 
 ```bash
+git clone https://github.com/Haim5/Lambeau.git
+cd Lambeau
 ./gradlew run
 ```
 
+On Windows, use `gradlew.bat run` instead.
+
 ## Dependencies
 
-- **JavaFX** — UI and 3D visualization
+- **JavaFX 21** — UI and 3D visualization (via Gradle plugin)
 - **Swing** — additional GUI components
