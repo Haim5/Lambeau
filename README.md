@@ -13,6 +13,7 @@ JavaFX is managed automatically by Gradle — no manual installation needed.
 ```bash
 git clone https://github.com/Haim5/Lambeau.git
 cd Lambeau
+chmod +x gradlew
 ./gradlew run
 ```
 
