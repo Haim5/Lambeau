@@ -23,6 +23,6 @@ application {
 sourceSets {
     main {
         java { srcDirs = ['src'] }
-        resources { srcDirs = ['src'] }
+        resources { srcDirs = ['src/res'] }
     }
 }
